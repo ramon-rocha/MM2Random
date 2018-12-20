@@ -43,11 +43,21 @@ namespace MM2Randomizer
         public static List<IRandomizer> Randomizers;
         public static List<IRandomizer> CosmeticRandomizers;
 
+        public static string RandomizerCreate(bool fromClientApp)
+        {
+            if (Seed < 0)
+            {
+                Random rndSeed = new Random();
+                Seed = rndSeed.Next(int.MaxValue);
+            }
+            return RandomizerCreate(fromClientApp, new Random(Seed), new Random(Seed));
+        }
+
         /// <summary>
         /// Perform the randomization based on the seed and user-provided settings, and then
         /// generate the new ROM.
         /// </summary>
-        public static string RandomizerCreate(bool fromClientApp)
+        public static string RandomizerCreate(bool fromClientApp, Random gameplayRng, Random cosmeticRng)
         {
             // List of randomizer modules to use; will add modules based on checkbox states
             Randomizers = new List<IRandomizer>();
@@ -178,9 +188,10 @@ namespace MM2Randomizer
                 CosmeticRandomizers.Add(rWeaponNames);
             }
 
-                
-            // Instantiate RNG object r based on RandomMM2.Seed
-            InitializeSeed();
+
+            // Use provided random number generators
+            Random = gameplayRng;
+            RNGCosmetic = cosmeticRng;
 
             // Create randomization patch
             Patch = new Patch();
@@ -304,20 +315,6 @@ namespace MM2Randomizer
                 RecentlyCreatedFileName = serverPathNew;
                 return serverPathNew;
             }
-        }
-
-        /// <summary>
-        /// Create a random seed or use the user-provided seed.
-        /// </summary>
-        private static void InitializeSeed()
-        {
-            if (Seed < 0)
-            {
-                Random rndSeed = new Random();
-                Seed = rndSeed.Next(int.MaxValue);
-            }
-            Random = new Random(Seed);
-            RNGCosmetic = new Random(Seed);
         }
 
         /// <summary>
