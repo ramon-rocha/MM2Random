@@ -95,6 +95,7 @@
     <Compile Include="Randomizers\Stages\RStages.cs" />
     <Compile Include="Randomizers\Stages\StageFromSelect.cs" />
     <Compile Include="RandomMM2.cs" />
+    <Compile Include="Utilities\CsvParser.cs" />
     <Compile Include="Utilities\MiscHacks.cs" />
     <Compile Include="Utilities\SeedConvert.cs" />
     <Compile Include="Utilities\TitleChars.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MM2Randomizer.Patcher;
+using MM2Randomizer.Utilities;
 
 namespace MM2Randomizer.Randomizers.Enemies
 {
@@ -41,13 +42,9 @@ namespace MM2Randomizer.Randomizers.Enemies
 
         public void Randomize(Patch p, Random r)
         {
-            string[] lines = Properties.Resources.enemyweakness.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-            foreach (string line in lines)
+            IReadOnlyList<string[]> lines = CsvParser.ReadValues(Properties.Resources.enemyweakness);
+            foreach (string[] cols in lines)
             {
-                if (line.StartsWith("#")) continue; // Ignore comment lines
-
-                string[] cols = line.Split(new char[] { ',' });
-
                 enemyNames.Add(cols[0]); // Enemy name
                 offsets.Add(Convert.ToInt32(cols[1], 16)); // Offset
                 shotP.Add(byte.Parse(cols[2])); // Buster

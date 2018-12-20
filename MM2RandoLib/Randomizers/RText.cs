@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using MM2Randomizer.Enums;
 using MM2Randomizer.Patcher;
+using MM2Randomizer.Utilities;
 using System.Text;
 using System.Linq;
 
@@ -50,15 +51,13 @@ namespace MM2Randomizer.Randomizers
             //    NINTENDO OF AMERICA. INC.
 
             // Line 1: ©2017 <company name> (13 chars for company, 19 total)
-            string[] lines;
             int startChar;
             string companyStr;
             char[] company;
 
-            lines = Properties.Resources.companynames.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            IReadOnlyList<string> lines = CsvParser.ReadLines(Properties.Resources.companynames);
             foreach (string line in lines)
             {
-                if (line.StartsWith("#")) continue; // Ignore comment lines
                 companyNames.Add(line);
             }
             companyStr = companyNames[r.Next(companyNames.Count)];
@@ -103,10 +102,9 @@ namespace MM2Randomizer.Randomizers
             }
 
             // Line 4: <Country>
-            lines = Properties.Resources.countrylist.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            lines = CsvParser.ReadLines(Properties.Resources.countrylist);
             foreach (string line in lines)
             {
-                if (line.StartsWith("#")) continue; // Ignore comment lines
                 countryNames.Add(line);
             }
             char[] country = countryNames[r.Next(countryNames.Count)].ToCharArray();
@@ -205,13 +203,10 @@ namespace MM2Randomizer.Randomizers
 
             // Credits: Text content and line lengths (Starting with "Special Thanks")
             StringBuilder creditsSb = new StringBuilder();
-            lines = Properties.Resources.creditstext.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            IReadOnlyList<string[]> creditsLines = CsvParser.ReadValues(Properties.Resources.creditstext, '|');
             int k = 0;
-            foreach (string line in lines)
+            foreach (string[] args in creditsLines)
             {
-                if (line.StartsWith("#")) continue; // Ignore comment lines
-                string[] args = line.Split('|');
-
                 p.Add(0x024C78 + k, (byte)args[2].Length, $"Credits Line {k} Length");
                 byte asdf = Convert.ToByte(args[1], 16);
                 p.Add(0x024C3C + k, asdf, $"Credits Line {k} X-Pos");

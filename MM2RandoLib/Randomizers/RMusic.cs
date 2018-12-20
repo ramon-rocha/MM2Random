@@ -1,5 +1,6 @@
 ﻿using MM2Randomizer.Enums;
 using MM2Randomizer.Patcher;
+using MM2Randomizer.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -152,14 +153,11 @@ namespace MM2Randomizer.Randomizers
         {
             List<Song> songs = new List<Song>();
             List<Song> stageSongs = new List<Song>();
-            string[] lines = Properties.Resources.music.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            IReadOnlyList<string[]> lines = CsvParser.ReadValues(Properties.Resources.music);
 
             // Read songs from file, parse and add to list
-            foreach (string line in lines)
+            foreach (string[] lineParts in lines)
             {
-                if (line.StartsWith("#")) continue; // Ignore comment lines
-                string[] lineParts = line.Split(',');
-
                 // Add song to list of songs
                 Song song = new Song(lineParts[0], lineParts[1], lineParts[2]);
                 songs.Add(song);

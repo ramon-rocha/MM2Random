@@ -5,6 +5,7 @@ using System.Linq;
 
 using MM2Randomizer.Enums;
 using MM2Randomizer.Patcher;
+using MM2Randomizer.Utilities;
 
 namespace MM2Randomizer.Randomizers.Enemies
 {
@@ -58,14 +59,10 @@ namespace MM2Randomizer.Randomizers.Enemies
         /// </summary>
         private void ReadEnemyInstancesFromFile()
         {
-            string[] lines = Properties.Resources.enemylist.Split(new string[] { Environment.NewLine }, StringSplitOptions.None );
+            IReadOnlyList<string[]> lines = CsvParser.ReadValues(Properties.Resources.enemylist);
 
-            foreach (string line in lines)
+            foreach (string[] cols in lines)
             {
-                if (line.StartsWith("#")) continue; // Ignore comment lines
-
-                string[] cols = line.Split(new char[] { ',' });
-
                 EnemyInstance enemy = new EnemyInstance(
                     Convert.ToInt32(cols[0], 16), // Index
                     Convert.ToInt32(cols[1], 16), // StageNum
